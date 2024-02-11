@@ -1,4 +1,5 @@
 import { ChangeEvent, useState } from 'react'
+import { toast } from 'sonner'
 
 import Logo from '@/assets/logo.svg'
 
@@ -37,6 +38,16 @@ export function App() {
     localStorage.setItem('notes', JSON.stringify(notesArray))
   }
 
+  function onNoteDeleted(id: string) {
+    const notesArray = notes.filter((note) => note.id !== id)
+
+    setNotes(notesArray)
+
+    localStorage.setItem('notes', JSON.stringify(notesArray))
+
+    toast.success('Nota apagada com sucesso!')
+  }
+
   function handleSearch(event: ChangeEvent<HTMLInputElement>) {
     const query = event.target.value
 
@@ -51,7 +62,7 @@ export function App() {
       : notes
 
   return (
-    <div className="mx-auto my-12 max-w-6xl space-y-6">
+    <div className="mx-auto my-12 max-w-6xl space-y-6 px-5 lg:px-0">
       <img src={Logo} alt="Logo of NLW EXPERT" className="w-32" />
       <form>
         <input
@@ -65,11 +76,11 @@ export function App() {
 
       <div className="h-px bg-slate-700" />
 
-      <div className="grid auto-rows-[250px] grid-cols-3 gap-6">
+      <div className="grid auto-rows-[250px] grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         <NewNoteCard onNoteCreated={onNoteCreated} />
 
         {filteredNotes.map((note) => (
-          <NoteCard key={note.id} note={note} />
+          <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted} />
         ))}
       </div>
     </div>
